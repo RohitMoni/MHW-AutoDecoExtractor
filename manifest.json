@@ -1,0 +1,6 @@
+{
+    "name": "MHW Auto Deco Data",
+    "version": "1.0",
+    "description": "Pulls decoration data from your Monster Hunter World saves to set up for use in the Honey Hunter MHW Builder",
+    "manifest_version": 2
+}
