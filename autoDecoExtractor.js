@@ -1,5 +1,5 @@
 function extractDecoDataFromSavefile() {
-    
+
 }
 
 function writeDecoDataToDomInput(decoData) {
@@ -10,4 +10,10 @@ function writeDecoDataToDomInput(decoData) {
     rewriteDecoDataButton.click();
 }
 
-writeDecoDataToDomInput("0, 0, 0, 0");
+// writeDecoDataToDomInput("0, 0, 0, 0");
+
+// chrome.storage.sync.get(['saveno'], function (result) {
+//     alert(result.saveno);
+// });
+
+// alert("Save number: " + config.saveno);
