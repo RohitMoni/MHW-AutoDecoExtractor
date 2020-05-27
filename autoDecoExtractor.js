@@ -12,8 +12,6 @@ function writeDecoDataToDomInput(decoData) {
 
 // writeDecoDataToDomInput("0, 0, 0, 0");
 
-// chrome.storage.sync.get(['saveno'], function (result) {
-//     alert(result.saveno);
-// });
-
-// alert("Save number: " + config.saveno);
+chrome.storage.local.get(['saveFile', 'saveNumber'], function (result) {
+    console.log(result.saveNumber);
+});

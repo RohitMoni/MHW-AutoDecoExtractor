@@ -1,11 +1,35 @@
-let runButton = document.getElementById('runDecoExtractor');
-let saveFileInputEl = document.getElementById('saveFileInput');
+// Initialize base storage values
+chrome.storage.local.set({ "saveFile": null }, function () {
+    console.log('saveFile is set to null');
+});
+chrome.storage.local.set({ "saveNumber": "save1" }, function () {
+    console.log('saveNumber is set to save1');
+});
 
-// runButton.disabled = true;
+// Setup file input event listener to catch the input file, validate it's correct and pull the file data from it
+var saveFileInput = document.getElementById('saveFileInput');
+saveFileInput.addEventListener("change", () => {
+    var saveFileInput = document.getElementById('saveFileInput');
+    var file = saveFileInput.files.item(0);
 
-// Initialize saveno in storage to be save1
-chrome.storage.sync.set({ "saveno": "save1" }, function () {
-    console.log('saveno is set to save1');
+    chrome.storage.local.set({ "saveFile": file }, function () {
+        console.log('saveFile has been set!');
+    });
+
+    // var reader = new FileReader();
+
+    // reader.onload = () => {
+    //     console.log("File Read complete!");
+        
+    // }
+
+    // reader.onerror = () => {
+    //     console.log(reader.error);
+    // }
+
+    // reader.readAsArrayBuffer(file);
+
+    runButton.disabled = false;
 });
 
 // Setup radio button event listeners so that when a radio button is pressed (For a specific save)
@@ -22,13 +46,15 @@ for (var i = 0; i < radioInputs.length; i++) {
             }
         }
 
-        chrome.storage.sync.set({ "saveno": checkedValue }, function () {
-            console.log('saveno is set to ' + checkedValue);
+        chrome.storage.local.set({ "saveNumber": checkedValue }, function () {
+            console.log('saveNumber is set to ' + checkedValue);
         });
     });
 }
 
 // Setup button event listener so that when it's pressed we run the content script to inject our deco data into the HH builder page
+var runButton = document.getElementById('runDecoExtractor');
+runButton.disabled = true;
 runButton.onclick = function (element) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.tabs.executeScript(
