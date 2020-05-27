@@ -2,18 +2,18 @@
 <html>
 
 <head>
-    <style>
-        button {
-            height: 30px;
-            width: 30px;
-            outline: none;
-        }
-    </style>
+    <link rel="stylesheet" href="popup.css">
 </head>
-
 <body>
-    <button id="runDecoExtractor">Run</button>
-    <script src="popup.js"></script>
+    <div class="main-container">
+        <label>
+            Save File
+            <input class="file-input" type="file" id="saveFileInput" name="saveFileInput">
+        </label>
+        <br>
+        <button class="run-button" id="runDecoExtractor">Run</button>
+        <script src="popup.js"></script>
+    </div>
 </body>
 
 </html>
