@@ -47,11 +47,15 @@ saveFileInput.addEventListener("change", () => {
         feedbackText.innerHTML = "File loaded!";
 
         var fileData = reader.result;
+        feedbackText.innerHTML = "Extracting deco data...";
         var decoData = extractDecoDataFromFileData(fileData);
 
         if (decoData == null) {
             feedbackText.innerHTML = "Failed to extract data from file!";
             return;
+        }
+        else {
+            feedbackText.innerHTML = "Done!";
         }
 
         var saveState = {
@@ -60,6 +64,8 @@ saveFileInput.addEventListener("change", () => {
         }
 
         chrome.storage.local.set(saveState, function () {
+            var feedbackText = document.getElementById('feedback-text');
+            feedbackText.innerHTML = "Ready to run...";
             console.log('file data has been set!');
             runButton.disabled = false;
         });
