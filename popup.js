@@ -46,8 +46,16 @@ saveFileInput.addEventListener("change", () => {
         var feedbackText = document.getElementById('feedback-text');
         feedbackText.innerHTML = "File loaded!";
 
-        chrome.storage.local.set({ "saveFile": file.name }, function () {
-            console.log('saveFile has been set!');
+        var fileData = reader.result;
+        var decoData = extractDecoDataFromFileData(fileData);
+
+        var saveState = {
+            "saveFile": file.name,
+            "decoData": decoData
+        }
+
+        chrome.storage.local.set(saveState, function () {
+            console.log('file data has been set!');
             runButton.disabled = false;
         });
     }
@@ -65,7 +73,7 @@ saveFileInput.addEventListener("change", () => {
         });
     }
 
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(file);
 });
 
 // Setup radio button event listeners so that when a radio button is pressed (For a specific save)
