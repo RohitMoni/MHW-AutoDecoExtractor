@@ -1,4 +1,4 @@
-chrome.storage.local.clear(); // Reset for debug
+// chrome.storage.local.clear(); // Reset for debug
 
 var runButton = document.getElementById('runDecoExtractor');
 runButton.disabled = true; // Disable this until we know we can run
@@ -48,6 +48,11 @@ saveFileInput.addEventListener("change", () => {
 
         var fileData = reader.result;
         var decoData = extractDecoDataFromFileData(fileData);
+
+        if (decoData == null) {
+            feedbackText.innerHTML = "Failed to extract data from file!";
+            return;
+        }
 
         var saveState = {
             "saveFile": file.name,
