@@ -1,7 +1,3 @@
-function extractDecoDataFromSavefile() {
-
-}
-
 function writeDecoDataToDomInput(decoData) {
     var decoDataInput = document.getElementById("decodatainput");
     decoDataInput.value = decoData;
@@ -10,8 +6,6 @@ function writeDecoDataToDomInput(decoData) {
     rewriteDecoDataButton.click();
 }
 
-// writeDecoDataToDomInput("0, 0, 0, 0");
-
-chrome.storage.local.get(['saveFile', 'saveNumber'], function (result) {
-    console.log(result.saveNumber);
+chrome.storage.local.get(['decoData'], function (result) {
+    writeDecoDataToDomInput(result.decoData);
 });

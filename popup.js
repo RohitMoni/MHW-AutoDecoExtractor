@@ -1,9 +1,33 @@
-// Initialize base storage values
-chrome.storage.local.set({ "saveFile": null }, function () {
-    console.log('saveFile is set to null');
-});
-chrome.storage.local.set({ "saveNumber": "save1" }, function () {
-    console.log('saveNumber is set to save1');
+chrome.storage.local.clear(); // Reset for debug
+
+var runButton = document.getElementById('runDecoExtractor');
+runButton.disabled = true; // Disable this until we know we can run
+
+var defaultState = {
+    "saveFile": null,
+    "saveNumber": "save1",
+    "decoData": null
+}
+
+// Check for saved values or set defaults
+chrome.storage.local.get(defaultState, function (result) {
+    chrome.storage.local.set(result, function() {
+        console.log('Local storage initialized');
+    });
+
+    // If we had previous values saved, need to set up other stuff so that we retain that 'state'
+    var saveRadioButton = document.getElementById(result.saveNumber);
+    saveRadioButton.checked = true;
+
+    var feedbackText = document.getElementById('feedback-text');
+    if (result.saveFile != null) {
+        feedbackText.innerHTML = "File: " + result.saveFile;
+        var runButton = document.getElementById('runDecoExtractor');
+        runButton.disabled = false; // We have a previous file, can run with previous data
+    }
+    else {
+        feedbackText.innerHTML = "No file loaded";
+    }
 });
 
 // Setup file input event listener to catch the input file, validate it's correct and pull the file data from it
@@ -12,24 +36,36 @@ saveFileInput.addEventListener("change", () => {
     var saveFileInput = document.getElementById('saveFileInput');
     var file = saveFileInput.files.item(0);
 
-    chrome.storage.local.set({ "saveFile": file }, function () {
-        console.log('saveFile has been set!');
-    });
+    var feedbackText = document.getElementById('feedback-text');
+    feedbackText.innerHTML = "Loading " + file.name + "...";
 
-    // var reader = new FileReader();
+    // Load file and run extractor / validate
+    var reader = new FileReader();
+    reader.onload = () => {
+        console.log("File Read complete!");
+        var feedbackText = document.getElementById('feedback-text');
+        feedbackText.innerHTML = "File loaded!";
 
-    // reader.onload = () => {
-    //     console.log("File Read complete!");
-        
-    // }
+        chrome.storage.local.set({ "saveFile": file.name }, function () {
+            console.log('saveFile has been set!');
+            runButton.disabled = false;
+        });
+    }
 
-    // reader.onerror = () => {
-    //     console.log(reader.error);
-    // }
+    // IF we fail, reset back to initial state
+    reader.onerror = () => {
+        console.log(reader.error);
+        var feedbackText = document.getElementById('feedback-text');
+        feedbackText.innerHTML = "File failed to load!";
+        var runButton = document.getElementById('runDecoExtractor');
+        runButton.disabled = true; // Disable the run button
 
-    // reader.readAsArrayBuffer(file);
+        chrome.storage.local.set( { "saveFile": null }, function () {
+            console.log('File reset to null');
+        });
+    }
 
-    runButton.disabled = false;
+    reader.readAsText(file);
 });
 
 // Setup radio button event listeners so that when a radio button is pressed (For a specific save)
@@ -53,12 +89,10 @@ for (var i = 0; i < radioInputs.length; i++) {
 }
 
 // Setup button event listener so that when it's pressed we run the content script to inject our deco data into the HH builder page
-var runButton = document.getElementById('runDecoExtractor');
-runButton.disabled = true;
 runButton.onclick = function (element) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.tabs.executeScript(
             tabs[0].id,
-            { file: 'autoDecoExtractor.js' });
+            { file: 'writeDecoData.js' });
     });
 };
